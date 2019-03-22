@@ -1,0 +1,127 @@
+
+jQuery DynaMeter Plugin
+
+This jQuery Plugin transforms a <div> of your choice into a dynamic, semi-circular meter display.
+DOWNLOAD, or Fork on GitHub!
+
+Requires jQuery 1.10.2 or newer
+Demos
+
+490
+
+lbs
+
+payload
+
+7.5
+
+gal
+
+fuel
+
+jQuery-UI Slider instances were added below to demonstrate real-time value updates.
+Drag a handle to update the corresponding DynaMeter above:
+
+After stylesheet and scripts setup, the Payload (above-left) demo was “DynaMeter-ized” with:
+
+    var $myPayloadMeter;
+    $( function () {
+        $myPayloadMeter = $('#payloadMeterDiv').dynameter({
+            // REQUIRED.
+            label: 'payload',
+            value: 500,
+            unit: 'lbs',
+            min: 0,
+            max: 1000,
+            regions: {
+                800: 'warn',
+                900: 'error'
+            }
+        });
+        // jQuery-UI Slider.
+        $('#payloadSliderDiv').slider({
+            min: 0,
+            max: 1000,
+            value: 500,
+            step: 10,
+            slide: function (evt, ui) {
+                $myPayloadMeter.changeValue(ui.value);
+            }
+        });
+    });
+
+Setup
+
+    Download jquery.dynameter.zip
+    Add the DynaMeter stylesheet link to your <head> section
+    [change path and customize rules to suit your file-structure and styling]:
+
+        <link rel="stylesheet" type="text/css" href="css/jquery.dynameter.css">
+
+    Add the jQuery core script tag to bottom of your <body> section
+    [change path to suit your file-structure]:
+
+        <script type="text/javascript" src="js/jquery.min.js"></script>
+
+    Add the jQuery Dynameter script tag to bottom of your <body> section, BELOW jQuery core
+    [change path to suit your file-structure]:
+
+        <script type="text/javascript" src="js/jquery.dynameter.js"></script>
+
+Usage
+
+    Create a <div> tag in your <body> section with a unique id -- you'll need to identify this element specifically in order to update its value-indicator.
+
+        <div id="payloadMeterDiv"></div>
+
+    DynaMeter-ize your DIV tag (initialize it) with your own script tag BELOW the DynaMeter script tag, where you declare a variable and call the DynaMeter method on your <div> for it.
+    You'll use this var to update the indicator-value. The required initialization settings are shown below:
+
+        <script type="text/javascript">
+            var $payloadMeter = null;
+            $( function () {
+                $payloadMeter = $('div#payloadMeterDiv').dynameter({
+                    // REQUIRED.
+                    label: 'Payload',
+                    value: 500,
+                    unit: 'lbs',
+                    min: 0,
+                    max: 1000
+                });
+            });
+        </script>
+
+    To update your DynaMeter-instance value-indicator in your own script, call DynaMeter's public changeValue method on your variable:
+
+        $payloadMeter.changeValue(238);
+
+    To add warning and/or error regions to your DynaMeter instance, add a regions object to your initialization settings:
+
+        // Higher values are worse (e.g. Payload demo above)...
+        ...dynameter({
+            ...,
+            regions: {
+                800: 'warn',  // 'warn' if 850 pounds or more, but less than 950 pounds.
+                900: 'error'  // 'error' if 950 pounds or more.
+            }
+        });
+          
+        // Higher values are better (e.g. Fuel demo above)...
+        // Must begin with 0 or min.
+        ...dynameter({
+            ...,
+            regions: {
+                0: 'error',  // 'error' if less than 0.5 gallon.
+                0.5: 'warn',  // 'warn' if less than 1.5 gallons, but 0.5 gallon or more.
+                1.5: 'normal' // 'normal' if 1.5 gallons or more.
+            }
+        });
+
+    [See Demos]
+
+Collaborators Welcome!
+
+Come join the fun! Either email me to join the core development team, or fork my GitHub repository and send Pull Requests.
+Currently, I'd like some help with qUnit tests, Grunt-build implementation, add'l. styling options -- maybe some themes, etc. Thanks in advance!
+
+Copyright © 2014 Tzechiu Lei. MIT license.

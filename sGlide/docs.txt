@@ -1,0 +1,133 @@
+
+Usage: jQuery
+
+Each of the examples below correspond to the ones above. Just apply sGlide() to an empty <div> with a unique identifier. You can leverage this identifier (or class) to style the shell and its components with CSS. Hint: use .slider_knob and .follow_bar ■
+ 
+
+const callback = o => {
+	var pct = Math.round(o.percent)+'%';
+	$('#percentage').html(pct);
+};
+
+$('#myslider_1').sGlide({
+	height		: 10,
+	image		: 'images/knob.png',
+	startAt		: 70,
+	colorShift	: ['#3a4d31', '#7bb560'],
+	buttons		: true,
+	drag		: callback,
+	onButton	: callback
+});
+
+$('#myslider_2').on('sGlide.ready', function(e, data){
+	$(this).sGlide('startAt', 66.66);
+	$('#container').css('visibility', 'visible');
+}).sGlide({
+	startAt	: 38,
+	pill	: false,
+	width	: 60,
+	snap	: {
+		points	: 4,
+		markers	: true
+	}
+});
+
+$('#myslider_3').sGlide({
+	startAt	: 50,
+	height	: 20,
+	disabled: true,
+	noHandle: true
+});
+
+// dynamically update
+$('#myslider_3').sGlide(
+	'startAt',
+	input_value,	// Number, percent
+	true			// animate
+);
+
+$('#myslider_4').sGlide({
+	startAt	: 33.33,
+	width	: 300,
+	unit	: 'px',
+	snap	: {
+		points	: 5,
+		markers	: true,
+		type	: 'soft'
+	},
+	vertical: true,
+	noHandle: true
+});
+
+
+Create animated* loadbars, by passing a percentage value to the startAt prop of an existing slider: slider_div.sGlide('startAt', 68.2). To enable animation ($), set the third parameter.
+
+To rebuild a slider, destroy it first: slider_div.sGlide('destroy') ($) or sGlide_inst.destroy().
+
+To enable keyboard arrow controls, give your main shell the following attribute: data-keys="true".
+•  To require the Shift key, use data-keys="shift"
+•  To require the Ctrl key, use data-keys="ctrl"
+Usage: Standalone (no dependency)
+
+var el = document.getElementById('myslider_4');
+
+var my_slider = new sGlide(el, {
+	startAt	: 33.33,
+	width	: 300,
+	unit	: 'px',
+	snap	: {
+		points	: 5,
+		markers	: true,
+		type	: 'soft'
+	},
+	vertical: true,
+	noHandle: true
+}).load(function(data){
+	this.startAt(data.percent * 2);	// 66.66
+});
+
+// multiple sliders
+
+var sGlideInstances = [];
+var nodes = document.getElementsByClassName('slider_bar');
+
+for (el of nodes){
+	sGlideInstances.push(new sGlide(el, {
+		width	: 300,
+		unit	: 'px',
+		buttons	: true,
+		drop	: o => {
+			var pct = Math.round(o.percent)+'%';
+			document.getElementById('percentage')
+				.innerHTML = pct;
+		},
+	}));
+}
+
+Breakdown
+Property	Default	Description
+startAt	0	Number. Percentage value to set the slider handle position on its creation. Currently only accepts percentage values, but callbacks return both percentage and custom unit values at runtime.
+image	''	String. Path of handle/knob image to use; e.g. 'images/slider-knob.png'
+retina	false	Boolean. As of version 2. If true, looks for an image with the suffix @2x based on the image property. Make sure the @2x image exists.
+width	100	Number. The width of the main shell of the slider. If unit is set to '%' or unset, width will be relative to its parent.
+height	40	Number. Pixel value of the height of the main shell of the slider. Ignores unit.
+unit	'%'	String. Also accepts 'px' to govern widths.
+pill	true	Boolean. Set to false to turn off rounded corners.
+disabled	false	Boolean. Disables user interactivity. As of v3, no longer hides knob. Use noHandle.
+colorShift	[ ]	Array. As of version 2. An array of two CSS color values. The first being the start value, the last being the end value. Replaces colorStart and colorEnd.
+vertical	false	Boolean. Rotates the slider 90 degrees counterclockwise using CSS3. The −/+ buttons are exempt, so you'll have to position the slider and the buttons separately. When true, refrain from positioning the slider and its parent elements absolutely or relatively as this will offset the cursor registration.
+totalRange	[0, 0]	Array of two numbers. Custom units indicating start and end slider values. Slider position returned in output.custom
+showKnob	true	Boolean. Hides the knob when false. This has been removed as of v3.
+noHandle	false	Boolean. Collapses the knob. As of v3.
+buttons	false	Boolean. Draws −/+ buttons that flank the slider. You can change the HTML content of the buttons — on ready/load — once they've been drawn. Style them as necessary. Clicking one of the buttons will advance the slider 10%. Click & hold to advance continuously. When hard or soft snapping is used, the slider will advance to the snap points. The [enabled] keyboard controls work in the same fashion.
+snap	{…}	Object. Contains the following snap settings.
+snap.points	0	Number. Set the number of snap points between 1 and 11. Effectively enables snapping.
+snap.marks	false	Boolean. Draws tiny snap marks to indicate the snap points.
+snap.type	false	String. As of version 2.1. Set to 'hard' so that the slider handle cannot be positioned between snap points. Set to 'soft', like 'hard', but handle is positioned only after it has been dropped.
+snap.sensitivity	2	Number. As of version 2.2. Accepts decimal values between 1 & 3 inclusive. The higher the number, the bigger the jump to a snap point. Doesn't apply to hard snap.
+drop	 	Callback. Fire an event on handle drop. Returns an object containing slider data.
+drag	 	Callback. Fire an event on handle drag. Returns an object containing slider data.
+onSnap	 	Callback. Fire an event on handle snap. Returns an object containing slider data.
+onButton	 	Callback. Fire an event clicking or holding one of the −/+ buttons. Returns an object containing slider data. Requires buttons.
+onload	 	Callback. Fire an event when the slider has finished rendering. Returns an object containing slider data. This has been removed as of v3 to favour the load method in standalone and the sGlide.ready event in jQuery.
+
